@@ -97,7 +97,7 @@ function background_music_settings_callback() {
 }
 
 function admin_banner_image() {
-  $banner_url = 'https://example.com/banner.png';
+  $banner_url = 'https://adenwalla.in/wp-content/uploads/2023/02/Black-Elegant-Personal-LinkedIn-Banner.png';
   echo '<img src="'.$banner_url.'" style="width:100%;margin-bottom:20px;">';
 }
 add_action('admin_notices', 'admin_banner_image');
