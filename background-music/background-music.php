@@ -13,17 +13,31 @@ function background_music() {
     $music_url = get_option('music_url'); // get the music URL from the options
     if (!empty($music_url)) { // if the music URL is not empty
         echo '<audio id="background-music" src="'.$music_url.'" autoplay loop></audio>';
+        echo '<script>
+            document.getElementById("background-music").play();
+            </script>';
     }
 }
 add_action('wp_footer', 'background_music');
 
+
+function load_fontawesome_css() {
+    wp_enqueue_style( 'fontawesome', 'https://use.fontawesome.com/releases/v5.15.1/css/all.css' );
+}
+add_action( 'wp_enqueue_scripts', 'load_fontawesome_css' );
+
 function music_controls() {
-    echo '<button id="music-control" class="pause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg></button>';
+    $location = get_option('music_control_location');
+    $enabled = get_option('music_enabled');
+    if (!$enabled) {
+        return;
+    }
+    echo '<button id="music-control" class="pause">⏸️ Pause</button>';
     echo '<style>
         #music-control {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            ' . ($location == 'top-left' || $location == 'bottom-left' ? 'left: 20px;' : 'right: 20px;') . '
+            ' . ($location == 'top-left' || $location == 'top-right' ? 'top: 20px;' : 'bottom: 20px;') . '
             z-index: 999;
             display: block;
             padding: 10px 20px;
@@ -43,12 +57,12 @@ function music_controls() {
                     music.play();
                     control.classList.remove("play");
                     control.classList.add("pause");
-                    control.innerHTML = "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>";
+                    control.innerHTML = "⏸️ Pause";
                 } else {
                     music.pause();
                     control.classList.remove("pause");
                     control.classList.add("play");
-                    control.innerHTML = "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>";
+                    control.innerHTML = "▶ Play";
                 }
             });
         });
@@ -70,8 +84,12 @@ add_action('admin_menu', 'background_music_settings_page');
 function background_music_settings_callback() {
     if (isset($_POST['music_url'])) {
         update_option('music_url', $_POST['music_url']);
+        update_option('music_control_location', $_POST['music_control_location']);
+        update_option('music_enabled', isset($_POST['music_enabled']) ? 1 : 0);
     }
     $music_url = get_option('music_url');
+    $music_control_location = get_option('music_control_location');
+    $music_enabled = get_option('music_enabled');
     ?>
     <div class="wrap">
         <h1>Background Music Settings</h1>
@@ -86,6 +104,27 @@ function background_music_settings_callback() {
                             <input type="text" id="music_url" name="music_url" value="<?php echo $music_url; ?>">
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="music_control_location">Music Control Location</label>
+                        </th>
+                        <td>
+                            <select id="music_control_location" name="music_control_location">
+                                <option value="top-left" <?php selected($music_control_location, 'top-left'); ?>>Top Left</option>
+                                <option value="top-right" <?php selected($music_control_location, 'top-right'); ?>>Top Right</option>
+                                <option value="bottom-left" <?php selected($music_control_location, 'bottom-left'); ?>>Bottom Left</option>
+                                <option value="bottom-right" <?php selected($music_control_location, 'bottom-right'); ?>>Bottom Right</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="music_enabled">Music Enabled</label>
+                        </th>
+                        <td>
+                            <input type="checkbox" id="music_enabled" name="music_enabled" value="1" <?php checked($music_enabled, 1); ?>>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <p class="submit">
@@ -95,9 +134,3 @@ function background_music_settings_callback() {
     </div>
     <?php
 }
-
-function admin_banner_image() {
-  $banner_url = 'https://adenwalla.in/wp-content/uploads/2023/02/Black-Elegant-Personal-LinkedIn-Banner.png';
-  echo '<img src="'.$banner_url.'" style="width:100%;margin-bottom:20px;margin-top:20px;margin-right:20px;">';
-}
-add_action('admin_notices', 'admin_banner_image');
