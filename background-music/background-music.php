@@ -18,12 +18,12 @@ function background_music() {
 add_action('wp_footer', 'background_music');
 
 function music_controls() {
-    echo '<button id="music-control" class="pause">Pause</button>';
+    echo '<button id="music-control" class="pause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg></button>';
     echo '<style>
         #music-control {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 20px;
             z-index: 999;
             display: block;
             padding: 10px 20px;
@@ -43,12 +43,12 @@ function music_controls() {
                     music.play();
                     control.classList.remove("play");
                     control.classList.add("pause");
-                    control.innerHTML = "Pause";
+                    control.innerHTML = "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>";
                 } else {
                     music.pause();
                     control.classList.remove("pause");
                     control.classList.add("play");
-                    control.innerHTML = "Play";
+                    control.innerHTML = "<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>";
                 }
             });
         });
@@ -98,6 +98,6 @@ function background_music_settings_callback() {
 
 function admin_banner_image() {
   $banner_url = 'https://adenwalla.in/wp-content/uploads/2023/02/Black-Elegant-Personal-LinkedIn-Banner.png';
-  echo '<img src="'.$banner_url.'" style="width:100%;margin-bottom:20px;">';
+  echo '<img src="'.$banner_url.'" style="width:100%;margin-bottom:20px;margin-top:20px;margin-right:20px;">';
 }
 add_action('admin_notices', 'admin_banner_image');
