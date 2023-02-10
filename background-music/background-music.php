@@ -1,6 +1,6 @@
 <?php
-/**
- * Plugin Name: Background Music (Wordpress Autoplay)
+/*
+ * Plugin Name: Background Music (WP Autoplay)
  * Plugin URI: https://github.com/juned-adenwalla/Background-Music-Wordpress-Autoplay-
  * Description: A plugin to play music in the background when the site is loaded, add a floating button on all pages to pause or resume music.
  * Version: 1.0
